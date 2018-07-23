@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+p "hello from publisher"
+
+$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
+
+require 'pg_pub_sub'
+require 'active_record'
+
+ActiveRecord::Base.establish_connection
+
+STDOUT.sync = true
+pubsub = PgPubSub.new('tenants')
+
+i = 0
+loop do
+  p "publishing event #{i}..."
+  pubsub.publish("something has changed, reload your config please #{i}")
+  i += 1
+  sleep 0.2
+end

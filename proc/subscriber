@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+
+p "hello from subscriber"
+
+$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
+
+require 'pg_pub_sub'
+require 'active_record'
+
+ActiveRecord::Base.establish_connection
+STDOUT.sync = true
+pubsub = PgPubSub.new('tenants')
+
+pubsub.subscribe do |data|
+  puts "Received the following data: #{data.inspect}"
+end

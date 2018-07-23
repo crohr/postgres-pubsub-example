@@ -1,0 +1,27 @@
+version: "3"
+networks:
+  backend:
+services:
+  postgres:
+    image: postgres:9.5
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_DB=my_db
+      - POSTGRES_PASSWORD=p4ssw0rd
+    networks:
+      - backend
+  publisher:
+    build: .
+    command: bundle exec ./proc/publisher
+    environment:
+      - DATABASE_URL=postgres://user:p4ssw0rd@postgres:5432/my_db
+    networks:
+      - backend
+  subscriber:
+    build: .
+    command: bundle exec ./proc/subscriber
+    environment:
+      - DATABASE_URL=postgres://user:p4ssw0rd@postgres:5432/my_db
+    networks:
+      - backend
+
